@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人主页</title>
+    <style>
+        :root {
+            --main-color: #4CAF50;
+            --hover-color: #45a049;
+        }
+
+        body {
+            font-family: '微软雅黑', sans-serif;
+            margin: 0;
+            position: relative;
+            overflow: auto;  /* 修改此处 */
+        }
+
+        #waveCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.419);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 3px solid var(--main-color);
+        }
+
+        .avatar:hover {
+            transform: rotate(360deg) scale(1.1);
+        }
+
+        .info-card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid var(--main-color);
+            transition: box-shadow 0.3s;
+        }
+
+        .info-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .hobby-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .hobby-item {
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .hobby-item:hover {
+            background: var(--main-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .time-display {
+            text-align: center;
+            font-size: 1.2em;
+            color: var(--main-color);
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="waveCanvas"></canvas>
+    <div class="container">
+        <img src="images/avatar1.jpg" alt="头像" class="avatar" onclick="switchAvatar()">
+
+        <script>
+        // 新增头像切换函数
+        let currentAvatar = 1;
+        function switchAvatar() {
+            currentAvatar = currentAvatar % 3 + 1; // 预设3个头像
+            document.querySelector('.avatar').src = `images/avatar${currentAvatar}.jpg`;
+        }
+        </script>
+        <h1 style="text-align: center; color: var(--main-color);">张三的个人主页</h1>
+        
+        <div class="info-card">
+            <h2>基本信息</h2>
+            <p>📅 年龄：13岁</p>
+            <p>🏫 学校：阳光中学</p>
+            <p>📍 位置：上海市</p>
+        </div>
+
+        <div class="info-card" onclick="toggleHobbies()">
+            <h2 style="cursor: pointer;">兴趣爱好 <span id="arrow">▼</span></h2>
+            <div class="hobby-grid" id="hobbies" style="display: none;">
+                <div class="hobby-item">编程</div>
+                <div class="hobby-item">篮球</div>
+                <div class="hobby-item">阅读</div>
+                <div class="hobby-item">机器人</div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2 style="cursor: pointer;" onclick="toggleSkills()">我的技能 <span id="skillArrow">▶</span></h2>
+            <div id="skills" style="display:none;">
+                <div class="skill-bar">
+                    <div class="progress" style="width: 85%">HTML/CSS 85%</div>
+                </div>
+                <div class="skill-bar">
+                    <div class="progress" style="width: 70%">JavaScript 70%</div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+        /* 新增在原有style中 */
+        .skill-bar {
+            height: 25px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--main-color);
+            color: white;
+            text-align: right;
+            padding-right: 10px;
+            transition: width 1s ease-in-out;
+        }
+        </style>
+
+        <script>
+        // 新增在script中
+        function toggleSkills() {
+            const skills = document.getElementById('skills');
+            const arrow = document.getElementById('skillArrow');
+            skills.style.display = skills.style.display === 'none' ? 'block' : 'none';
+            arrow.innerHTML = skills.style.display === 'none' ? '▶' : '▼';
+        }
+        </script>
+        <div class="time-display" id="time"></div>
+    </div>
+
+    <script>
+        // 新增波浪效果
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        let time = 0;
+        let mousePos = {x: 0, y: 0};
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function drawWave() {
+            ctx.fillStyle = 'rgba(245, 245, 245, 0.2)'; // 更柔和的背景色
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 创建渐变效果
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, 'rgba(179, 229, 252, 0.3)'); // 浅蓝
+            gradient.addColorStop(1, 'rgba(225, 190, 231, 0.3)'); // 浅紫
+            
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height/2);
+            
+            // 调整波浪参数
+            for(let x = 0; x <= canvas.width; x += 20) { // 增大步长使曲线更平滑
+                const y = canvas.height/2 
+                        + Math.sin(x * 0.008 + time) * 12  // 减小基础幅度
+                        + (Math.sin((x - mousePos.x) * 0.015) * 10) // 降低鼠标影响系数
+                        + (Math.cos((mousePos.y - x) * 0.015) * 8);
+                ctx.lineTo(x, y);
+            }
+            
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.closePath();
+            ctx.fillStyle = gradient; // 使用渐变填充
+            ctx.fill();
+            
+            time += 0.03; // 减慢时间增量
+            requestAnimationFrame(drawWave);
+        }
+
+        // 事件监听
+        window.addEventListener('mousemove', (e) => {
+            mousePos.x = e.clientX;
+            mousePos.y = e.clientY;
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        drawWave();
+
+        // 实时时间显示
+        function updateTime() {
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('time').innerHTML = new Date().toLocaleDateString('zh-CN', options);
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 兴趣爱好展开/收起
+        let isHobbiesVisible = false;
+        function toggleHobbies() {
+            const hobbies = document.getElementById('hobbies');
+            const arrow = document.getElementById('arrow');
+            isHobbiesVisible = !isHobbiesVisible;
+            hobbies.style.display = isHobbiesVisible ? 'grid' : 'none';
+            arrow.innerHTML = isHobbiesVisible ? '▲' : '▼';
+        }
+
+        // 随机背景色变化
+        document.querySelectorAll('.hobby-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const randomColor = `hsl(${Math.random() * 360}, 70%, 80%)`;
+                item.style.backgroundColor = randomColor;
+            });
+        });
+    </script>
+</body>
+</html>
+
+<div class="social-box">
+    <a href="#" class="social-icon">📱</a>
+    <a href="#" class="social-icon">📧</a>
+    <a href="#" class="social-icon">🎵</a>
+</div>
+
+<style>
+.social-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.social-icon {
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: translateY(-5px) scale(1.2);
+}
+</style>
+
+<div class="info-card" onclick="toggleAchievements()">
+    <h2 style="cursor: pointer;">荣誉成就 <span id="achievementArrow">▶</span></h2>
+    <ul id="achievements" style="display:none;">
+        <li>🏆 2023编程比赛一等奖</li>
+        <li>🎖️ 校级三好学生</li>
+        <li>📚 图书馆阅读之星</li>
+    </ul>
+</div>
+
+<style>
+/* 新增样式 */
+#achievements li {
+    padding: 8px;
+    margin: 5px 0;
+    background: #f8f8f8;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+#achievements li:hover {
+    transform: translateX(10px);
+    background: var(--hover-color);
+    color: white;
+}
+</style>
+
+<script>
+// 新增切换函数
+function toggleAchievements() {
+    const list = document.getElementById('achievements');
+    const arrow = document.getElementById('achievementArrow');
+    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    arrow.innerHTML = list.style.display === 'none' ? '▶' : '▼';
+    // 新增动画效果
+    if (list.style.display === 'block') {
+        list.style.animation = 'slideDown 0.3s ease-out';
+    }
+}
+
+// 在style部分新增
+<style>
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</script>
