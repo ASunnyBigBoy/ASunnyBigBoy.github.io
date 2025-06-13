@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++循环结构对比：for循环 vs while循环</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: #ecf0f1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #3498db;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #bdc3c7;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .content {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+        
+        .loop-container {
+            flex: 1;
+            background: rgba(30, 30, 36, 0.9);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+        
+        .loop-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .loop-header {
+            background: rgba(44, 62, 80, 0.95);
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .loop-header i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .code-block {
+            padding: 20px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            background: #1e1e1e;
+            min-height: 250px;
+            position: relative;
+            counter-reset: line;
+        }
+        
+        .code-line {
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .code-line::before {
+            counter-increment: line;
+            content: counter(line);
+            display: inline-block;
+            width: 30px;
+            color: #7f8c8d;
+            margin-right: 15px;
+            text-align: right;
+        }
+        
+        .highlight {
+            background: rgba(52, 152, 219, 0.15);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5);
+            color: #fff;
+        }
+        
+        .comment {
+            color: #5c9e5c;
+        }
+        
+        .variable {
+            color: #9cdcfe;
+            font-weight: bold;
+        }
+        
+        .operator {
+            color: #dcdcaa;
+        }
+        
+        .output-area {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid #34495e;
+            min-height: 120px;
+        }
+        
+        .output-title {
+            margin-bottom: 10px;
+            color: #3498db;
+            display: flex;
+            align-items: center;
+        }
+        
+        .output-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .digit-box {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .digit-box.new {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+        }
+        
+        .variable-display {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .var-box {
+            background: rgba(41, 128, 185, 0.3);
+            padding: 12px 18px;
+            border-radius: 8px;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .var-name {
+            font-size: 1rem;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .var-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            padding: 0 20px;
+        }
+        
+        .control-btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, #2980b9, #3498db);
+        }
+        
+        .control-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .control-btn:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loop-comparison {
+            background: rgba(30, 30, 36, 0.9);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .comparison-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-align: center;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .comparison-card {
+            background: rgba(44, 62, 80, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .comparison-header {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: #f1c40f;
+        }
+        
+        .comparison-content {
+            line-height: 1.6;
+        }
+        
+        .key-point {
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .key-point i {
+            margin-right: 10px;
+            color: #2ecc71;
+        }
+        
+        .counter-display {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #bdc3c7;
+        }
+        
+        .step-highlight {
+            background: rgba(231, 76, 60, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #e74c3c;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-infinity"></i> C++ 循环结构对比</h1>
+            <p class="subtitle">通过数位分离任务直观展示 for 循环和 while 循环的执行过程，理解循环条件、变量更新和适用场景</p>
+        </header>
+        
+        <div class="content">
+            <!-- For循环区域 -->
+            <div class="loop-container">
+                <div class="loop-header">
+                    <i class="fas fa-sync-alt"></i> FOR 循环
+                </div>
+                <div class="code-block">
+                    <div id="for-line1" class="code-line"><span class="keyword">for</span>(<span class="keyword">int</span> <span class="variable">temp</span> = <span class="number">123</span>; <span class="variable">temp</span> <span class="operator">!=</span> <span class="number">0</span>; <span class="variable">temp</span> <span class="operator">/=</span> <span class="number">10</span>) {</div>
+                    <div id="for-line2" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> <span class="variable">digit</span> = <span class="variable">temp</span> <span class="operator">%</span> <span class="number">10</span>;</div>
+                    <div id="for-line3" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 输出分离的数字</span></div>
+                    <div id="for-line4" class="code-line">}</div>
+                </div>
+                <div class="output-area">
+                    <div class="output-title"><i class="fas fa-print"></i> 输出结果：</div>
+                    <div id="for-output" class="output-content">
+                        <!-- 数字会动态添加 -->
+                    </div>
+                    <div class="variable-display">
+                        <div class="var-box">
+                            <div class="var-name">temp</div>
+                            <div id="for-temp" class="var-value">123</div>
+                        </div>
+                        <div class="var-box">
+                            <div class="var-name">digit</div>
+                            <div id="for-digit" class="var-value">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- While循环区域 -->
+            <div class="loop-container">
+                <div class="loop-header">
+                    <i class="fas fa-redo-alt"></i> WHILE 循环
+                </div>
+                <div class="code-block">
+                    <div id="while-line1" class="code-line"><span class="keyword">int</span> <span class="variable">temp</span> = <span class="number">123</span>;</div>
+                    <div id="while-line2" class="code-line"><span class="keyword">while</span>(<span class="variable">temp</span> <span class="operator">!=</span> <span class="number">0</span>) {</div>
+                    <div id="while-line3" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">int</span> <span class="variable">digit</span> = <span class="variable">temp</span> <span class="operator">%</span> <span class="number">10</span>;</div>
+                    <div id="while-line4" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 输出分离的数字</span></div>
+                    <div id="while-line5" class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">temp</span> <span class="operator">/=</span> <span class="number">10</span>;</div>
+                    <div id="while-line6" class="code-line">}</div>
+                </div>
+                <div class="output-area">
+                    <div class="output-title"><i class="fas fa-print"></i> 输出结果：</div>
+                    <div id="while-output" class="output-content">
+                        <!-- 数字会动态添加 -->
+                    </div>
+                    <div class="variable-display">
+                        <div class="var-box">
+                            <div class="var-name">temp</div>
+                            <div id="while-temp" class="var-value">123</div>
+                        </div>
+                        <div class="var-box">
+                            <div class="var-name">digit</div>
+                            <div id="while-digit" class="var-value">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="prevBtn" class="control-btn" disabled>
+                <i class="fas fa-step-backward"></i> 上一步
+            </button>
+            <button id="nextBtn" class="control-btn">
+                <i class="fas fa-step-forward"></i> 下一步
+            </button>
+            <button id="resetBtn" class="control-btn">
+                <i class="fas fa-redo"></i> 重新开始
+            </button>
+            <button id="autoBtn" class="control-btn">
+                <i class="fas fa-play"></i> 自动演示
+            </button>
+        </div>
+        
+        <div class="counter-display">
+            当前步骤: <span id="current-step">0</span>/<span id="total-steps">14</span>
+        </div>
+        
+        <div class="loop-comparison">
+            <h2 class="comparison-title"><i class="fas fa-exchange-alt"></i> for循环 vs while循环对比</h2>
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <div class="comparison-header"><i class="fas fa-sync-alt"></i> FOR 循环特点</div>
+                    <div class="comparison-content">
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 循环结构紧凑，初始化、条件和更新都在一行</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 适用于已知循环次数的情况</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 自动处理循环变量更新</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 代码更简洁，可读性高</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 常用于遍历数组、序列等场景</div>
+                    </div>
+                </div>
+                <div class="comparison-card">
+                    <div class="comparison-header"><i class="fas fa-redo-alt"></i> WHILE 循环特点</div>
+                    <div class="comparison-content">
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 循环条件在开头单独判断</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 适用于循环次数未知的情况</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 需要手动管理循环变量更新</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 更灵活，可处理复杂条件</div>
+                        <div class="key-point"><i class="fas fa-check-circle"></i> 常用于用户输入验证等场景</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 代码执行步骤
+        const steps = [
+            // 0 - 初始状态
+            () => {
+                highlight('for-line1');
+                highlight('while-line1');
+                setVar('for-temp', '123');
+                setVar('for-digit', '-');
+                setVar('while-temp', '123');
+                setVar('while-digit', '-');
+                document.getElementById('current-step').textContent = '1';
+            },
+            
+            // 1 - for条件判断
+            () => {
+                highlight('for-line1');
+                setVar('for-digit', '-');
+                setOutput('for-output', '条件判断: temp=123 != 0 → 成立');
+            },
+            
+            // 2 - while条件判断
+            () => {
+                highlight('while-line2');
+                setOutput('while-output', '条件判断: temp=123 != 0 → 成立');
+            },
+            
+            // 3 - for循环体执行
+            () => {
+                highlight('for-line2');
+                setVar('for-digit', '3');
+                addDigit('for-output', 3);
+            },
+            
+            // 4 - while循环体执行
+            () => {
+                highlight('while-line3');
+                setVar('while-digit', '3');
+                addDigit('while-output', 3);
+            },
+            
+            // 5 - for循环结束，执行更新
+            () => {
+                highlight('for-line1');
+                setVar('for-temp', '12');
+                setVar('for-digit', '-');
+                setOutput('for-output', '更新: temp=123/10=12');
+            },
+            
+            // 6 - while执行更新
+            () => {
+                highlight('while-line5');
+                setVar('while-temp', '12');
+                setVar('while-digit', '-');
+                setOutput('while-output', '更新: temp=123/10=12');
+            },
+            
+            // 7 - for条件判断
+            () => {
+                highlight('for-line1');
+                setOutput('for-output', '条件判断: temp=12 != 0 → 成立');
+            },
+            
+            // 8 - while条件判断
+            () => {
+                highlight('while-line2');
+                setOutput('while-output', '条件判断: temp=12 != 0 → 成立');
+            },
+            
+            // 9 - for循环体执行
+            () => {
+                highlight('for-line2');
+                setVar('for-digit', '2');
+                addDigit('for-output', 2);
+            },
+            
+            // 10 - while循环体执行
+            () => {
+                highlight('while-line3');
+                setVar('while-digit', '2');
+                addDigit('while-output', 2);
+            },
+            
+            // 11 - for循环结束，执行更新
+            () => {
+                highlight('for-line1');
+                setVar('for-temp', '1');
+                setVar('for-digit', '-');
+                setOutput('for-output', '更新: temp=12/10=1');
+            },
+            
+            // 12 - while执行更新
+            () => {
+                highlight('while-line5');
+                setVar('while-temp', '1');
+                setVar('while-digit', '-');
+                setOutput('while-output', '更新: temp=12/10=1');
+            },
+            
+            // 13 - for条件判断
+            () => {
+                highlight('for-line1');
+                setOutput('for-output', '条件判断: temp=1 != 0 → 成立');
+            },
+            
+            // 14 - while条件判断
+            () => {
+                highlight('while-line2');
+                setOutput('while-output', '条件判断: temp=1 != 0 → 成立');
+            },
+            
+            // 15 - for循环体执行
+            () => {
+                highlight('for-line2');
+                setVar('for-digit', '1');
+                addDigit('for-output', 1);
+            },
+            
+            // 16 - while循环体执行
+            () => {
+                highlight('while-line3');
+                setVar('while-digit', '1');
+                addDigit('while-output', 1);
+            },
+            
+            // 17 - for循环结束，执行更新
+            () => {
+                highlight('for-line1');
+                setVar('for-temp', '0');
+                setVar('for-digit', '-');
+                setOutput('for-output', '更新: temp=1/10=0');
+            },
+            
+            // 18 - while执行更新
+            () => {
+                highlight('while-line5');
+                setVar('while-temp', '0');
+                setVar('while-digit', '-');
+                setOutput('while-output', '更新: temp=1/10=0');
+            },
+            
+            // 19 - for条件判断(结束)
+            () => {
+                highlight('for-line1');
+                setOutput('for-output', '条件判断: temp=0 != 0 → 不成立，循环结束');
+            },
+            
+            // 20 - while条件判断(结束)
+            () => {
+                highlight('while-line2');
+                setOutput('while-output', '条件判断: temp=0 != 0 → 不成立，循环结束');
+            },
+        ];
+
+        let currentStep = 0;
+        let autoPlayInterval = null;
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const autoBtn = document.getElementById('autoBtn');
+        const currentStepEl = document.getElementById('current-step');
+        const totalStepsEl = document.getElementById('total-steps');
+        
+        // 初始化
+        function init() {
+            totalStepsEl.textContent = steps.length;
+            reset();
+        }
+        
+        // 高亮代码行
+        function highlight(lineId) {
+            // 移除所有高亮
+            document.querySelectorAll('.code-line').forEach(line => {
+                line.classList.remove('highlight');
+            });
+            
+            // 添加新高亮
+            const line = document.getElementById(lineId);
+            if (line) line.classList.add('highlight');
+        }
+        
+        // 设置变量值
+        function setVar(varId, value) {
+            const varEl = document.getElementById(varId);
+            if (varEl) varEl.textContent = value;
+        }
+        
+        // 设置输出
+        function setOutput(outputId, text) {
+            const outputEl = document.getElementById(outputId);
+            if (outputEl) outputEl.innerHTML = text;
+        }
+        
+        // 添加数字到输出
+        function addDigit(outputId, digit) {
+            const outputEl = document.getElementById(outputId);
+            if (outputEl) {
+                const digitBox = document.createElement('div');
+                digitBox.className = 'digit-box new';
+                digitBox.textContent = digit;
+                outputEl.appendChild(digitBox);
+                
+                // 移除新数字的动画类
+                setTimeout(() => {
+                    digitBox.classList.remove('new');
+                }, 1000);
+            }
+        }
+        
+        // 执行下一步
+        function nextStep() {
+            if (currentStep < steps.length) {
+                steps[currentStep]();
+                currentStep++;
+                currentStepEl.textContent = Math.floor(currentStep / 2) + 1;
+                
+                prevBtn.disabled = false;
+                
+                if (currentStep === steps.length) {
+                    nextBtn.disabled = true;
+                    if (autoPlayInterval) {
+                        clearInterval(autoPlayInterval);
+                        autoPlayInterval = null;
+                        autoBtn.innerHTML = '<i class="fas fa-play"></i> 自动演示';
+                    }
+                }
+            }
+        }
+        
+        // 执行上一步
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                reset();
+                
+                // 重新执行到上一步
+                for (let i = 0; i < currentStep; i++) {
+                    steps[i]();
+                }
+                
+                currentStepEl.textContent = Math.floor(currentStep / 2) + 1;
+                
+                if (currentStep === 0) {
+                    prevBtn.disabled = true;
+                }
+                
+                nextBtn.disabled = false;
+            }
+        }
+        
+        // 重置
+        function reset() {
+            // 清除所有高亮
+            document.querySelectorAll('.code-line').forEach(line => {
+                line.classList.remove('highlight');
+            });
+            
+            // 重置变量
+            setVar('for-temp', '123');
+            setVar('for-digit', '-');
+            setVar('while-temp', '123');
+            setVar('while-digit', '-');
+            
+            // 清空输出
+            setOutput('for-output', '');
+            setOutput('while-output', '');
+            
+            // 重置步骤
+            currentStep = 0;
+            currentStepEl.textContent = '0';
+            prevBtn.disabled = true;
+            nextBtn.disabled = false;
+            
+            // 重置自动播放
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                autoBtn.innerHTML = '<i class="fas fa-play"></i> 自动演示';
+            }
+        }
+        
+        // 自动播放
+        function toggleAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                autoBtn.innerHTML = '<i class="fas fa-play"></i> 自动演示';
+            } else {
+                autoBtn.innerHTML = '<i class="fas fa-pause"></i> 暂停演示';
+                autoPlayInterval = setInterval(() => {
+                    if (currentStep < steps.length) {
+                        nextStep();
+                    } else {
+                        clearInterval(autoPlayInterval);
+                        autoPlayInterval = null;
+                        autoBtn.innerHTML = '<i class="fas fa-play"></i> 自动演示';
+                    }
+                }, 1500);
+            }
+        }
+        
+        // 事件监听
+        nextBtn.addEventListener('click', nextStep);
+        prevBtn.addEventListener('click', prevStep);
+        resetBtn.addEventListener('click', reset);
+        autoBtn.addEventListener('click', toggleAutoPlay);
+        
+        // 初始化页面
+        window.onload = init;
+    </script>
+</body>
+</html>
