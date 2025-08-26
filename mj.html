@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门酱的小宇宙✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #ffcdd2 0%, #f8bbd0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: #ffb6c1;
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        h1 {
+            color: #e91e63;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            color: #ff80ab;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .nickname-box {
+            background: #fce4ec;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            border: 3px dashed #f06292;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .nickname-title {
+            color: #ad1457;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .nickname-text {
+            color: #880e4f;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .dance-btn {
+            background: linear-gradient(45deg, #ff4081, #e91e63);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(233, 30, 99, 0.4);
+            position: relative;
+            z-index: 1;
+            margin: 20px 0;
+        }
+        
+        .dance-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.6);
+        }
+        
+        .dance-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        
+        .decoration {
+            position: absolute;
+            bottom: -30px;
+            left: -30px;
+            width: 120px;
+            height: 120px;
+            background: #f48fb1;
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: 0;
+        }
+        
+        .decoration:nth-child(2) {
+            bottom: -60px;
+            right: -60px;
+            width: 80px;
+            height: 80px;
+            background: #f06292;
+        }
+        
+        footer {
+            margin-top: 30px;
+            color: #bdbdbd;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="decoration"></div>
+        <div class="decoration"></div>
+        
+        <h1>🌸 门酱の魔法空间 🌸</h1>
+        <p class="subtitle">欢迎来到门酱的梦幻乐园~ 这里充满甜蜜与欢笑！</p>
+        
+        <div class="nickname-box">
+            <div class="nickname-title">🎭 :) </div>
+            <div class="nickname-text">
+                        <br>
+                <strong>"门酱专属网站"</strong> 😜<br>
+                门酱的第一个网站
+            </div>
+        </div>
+        
+        <button class="dance-btn" onclick="window.open('https://www.bilibili.com/video/BV1he4y1w7wB/?spm_id_from=333.337.search-card.all.click', '_blank')">
+            ✨ 点击看门酱跳舞啦！💃
+        </button>
+        
+        <footer>
+            © 2025 门酱的小宇宙 | 做最甜的门酱粉丝团！
+        </footer>
+    </div>
+</body>
+</html>
